@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>春源鋼鐵 - 輔導員急救包</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0f172a, #1e3a8a);
+            --accent-orange: #f97316;
+            --bg-gray: #f8fafc;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-gray); color: #334155; line-height: 1.6; margin: 0; padding: 16px;
+        }
+
+        .container { max-width: 650px; margin: 0 auto; }
+
+        /* 頂部 Header */
+        header {
+            text-align: center; background: var(--primary-gradient); color: white;
+            padding: 30px 20px; border-radius: 24px; margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+        }
+        header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+        header p { margin: 8px 0 0 0; opacity: 0.85; font-size: 13px; }
+
+        /* 通用卡片外觀 */
+        .glass-card {
+            background: #ffffff; padding: 24px; border-radius: 20px;
+            box-shadow: var(--card-shadow); margin-bottom: 20px; border: 1px solid #f1f5f9;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .glass-card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+        .glass-card h2 { font-size: 16px; font-weight: 700; margin-top: 0; color: #1e3a8a; margin-bottom: 16px; }
+
+        /* 1. 錦囊妙計 */
+        .search-input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; font-size: 14px; margin-bottom: 16px; transition: all 0.2s; background-color: #f8fafc; }
+        .search-input:focus { outline: none; border-color: #3b82f6; background-color: #ffffff; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .tag { background-color: #f1f5f9; color: #475569; padding: 6px 14px; border-radius: 50px; font-size: 13px; cursor: pointer; border: 1px solid #e2e8f0; transition: all 0.2s; font-weight: 500; }
+        .tag:hover { background-color: #e2e8f0; color: #1e293b; }
+        .tag.active { background-color: #1e3a8a; color: white; border-color: #1e3a8a; }
+        .result-box { font-size: 14px; }
+        .result-card-inner { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 0 12px 12px 0; margin-top: 10px; animation: fadeIn 0.3s ease-in-out; }
+        .result-box h3 { margin: 0 0 8px 0; color: #1e3a8a; font-size: 15px; }
+        .result-box ul { margin: 0; padding-left: 20px; color: #334155; }
+        .result-box li { margin-bottom: 8px; }
+
+        /* 2. 打氣筒 */
+        .pump-section { text-align: center; background: linear-gradient(135deg, #ffffff, #f0fdf4); border: 2px dashed #bbf7d0; }
+        .btn-pump { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 12px 28px; font-size: 14px; font-weight: 700; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3); }
+        .quote-display { margin-top: 16px; font-size: 15px; font-weight: 700; color: #0f172a; min-height: 24px; }
+
+        /* 3. 幕後故事 (手風琴) */
+        .accordion-item { border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; overflow: hidden; background-color: #ffffff; }
+        .accordion-header { background-color: #f8fafc; padding: 14px 16px; font-weight: 700; font-size: 14px; color: #1e3a8a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .accordion-header:hover { background-color: #f1f5f9; }
+        .accordion-header::after { content: '▼'; font-size: 10px; color: #94a3b8; transition: transform 0.3s; }
+        .accordion-item.active .accordion-header::after { transform: rotate(180deg); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background-color: #ffffff; }
+        .accordion-body { padding: 16px; font-size: 13.5px; border-top: 1px solid #e2e8f0; }
+        .story-block { margin-bottom: 12px; }
+        .story-block:last-child { margin-bottom: 0; }
+        .story-label { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+        .label-status { background-color: #fee2e2; color: #ef4444; }
+        .label-process { background-color: #e0f2fe; color: #0369a1; }
+        .label-change { background-color: #dcfce7; color: #15803d; }
+        .label-reflection { background-color: #fef9c3; color: #a16207; }
+
+        /* 視覺化後台樣式 */
+        .admin-trigger { text-align: center; margin-top: 40px; opacity: 0.3; font-size: 12px; cursor: pointer; }
+        #adminSection { display: none; background: #fffbeb; border: 2px solid #fef08a; padding: 24px; border-radius: 24px; margin-top: 30px; box-shadow: var(--card-shadow); }
+        .admin-title { font-weight: bold; color: #b45309; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #fde047; padding-bottom: 5px; }
+        .admin-section-block { background: #ffffff; border: 1px solid #fef08a; padding: 16px; border-radius: 16px; margin-bottom: 20px; }
+        .admin-section-block h4 { margin: 0 0 12px 0; color: #78350f; font-size: 14px; border-left: 3px solid #d97706; padding-left: 6px; }
+        .admin-item-box { background: #fafafa; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; margin-bottom: 12px; position: relative; }
+        .admin-label { display: block; font-weight: bold; font-size: 12px; color: #475569; margin-top: 6px; margin-bottom: 2px; }
+        .admin-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; box-sizing: border-box; margin-bottom: 4px; }
+        .admin-textarea-sm { width: 100%; height: 60px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; box-sizing: border-box; resize: vertical; }
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; float: right; margin-top: -2px; }
+        .btn-add { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-top: 5px; }
+        .btn-admin-save { background: linear-gradient(135deg, #d97706, #b45309); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: bold; width: 100%; margin-top: 10px; box-shadow: 0 4px 6px rgba(217, 119, 6, 0.2); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>春源鋼鐵 ｜ 輔導員數位急救包 🩺</h1>
+        <p>點擊、搜尋！前輩智慧隨身帶著走</p>
+    </header>
+
+    <div class="glass-card">
+        <h2>💡 1. 錦囊妙計</h2>
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 輸入關鍵字（如：內向、被動、流程、忘記...）" oninput="searchKeyword()">
+        <div class="tag-container" id="tagContainer"></div>
+        <div class="result-box" id="searchResult"></div>
+    </div>
+
+    <div class="glass-card pump-section">
+        <h2>🔋 2. 輔導員打氣筒</h2>
+        <p style="font-size: 12.5px; color:#64748b; margin-top:-8px;">被新人氣到了？點擊下方按鈕補滿正能量！</p>
+        <button class="btn-pump" onclick="injectEnergy()">注入前輩正能量</button>
+        <div class="quote-display" id="quoteDisplay">保持平常心，深呼吸一下。</div>
+    </div>
+
+    <div class="glass-card">
+        <h2>🎬 3. 幕後故事</h2>
+        <p style="font-size: 13.5px; color:#475569; margin-top:-8px; margin-bottom: 16px; font-weight: 500;">每位成功的輔導員都走過一段曲折的故事，點擊下方案例看看他們如何收服各種新人：</p>
+        <div id="accordionGroup"></div>
+    </div>
+
+    <div class="admin-trigger" onclick="openAdmin()">⚙️ 人資管理後台登入</div>
+
+    <div id="adminSection">
+        <div class="admin-title">🛠️ 春源人資專屬無程式碼管理後台</div>
+        
+        <div class="admin-section-block">
+            <h4>0. 修改管理後台登入密碼</h4>
+            <label class="admin-label">新管理密碼：</label>
+            <input type="text" class="admin-input" id="adminPasswordInput" placeholder="請輸入新管理密碼">
+        </div>
+
+        <div class="admin-section-block">
+            <h4>1. 修改「打氣筒金句」 (每句一行)</h4>
+            <textarea class="admin-textarea-sm" id="adminQuotesText" style="height: 100px;"></textarea>
+        </div>
+
+        <div class="admin-section-block">
+            <h4>2. 修改「錦囊妙計資料庫」</h4>
+            <div id="adminQaContainer"></div>
+            <button class="btn-add" onclick="addBlankQa()">＋ 新增快搜問題分類</button>
+        </div>
+
+        <div class="admin-section-block">
+            <h4>3. 修改「幕後故事案例分享」</h4>
+            <div id="adminStoryContainer"></div>
+            <button class="btn-add" onclick="addBlankStory()">＋ 新增個案故事</button>
+        </div>
+
+        <button class="btn-admin-save" onclick="collectDataAndExport()">💾 儲存所有修改並導出全新網頁檔案</button>
+    </div>
+</div>
+
+<script>
+    // START_DATA_SECTION
+    let adminPassword = "1200";
+
+    let quotes = [
+        "「人才留得住，才是最大的收穫。」🌱",
+        "「外行人的問題，反而是長久以來精進流程的契機！」✨",
+        "「少一分自己的主觀意識，多一分同理心站在新人的角度看事情。」❤️",
+        "「聽比說更困難，先建立一個願意讓對方開口空間，雙向溝通才有效。」☀️",
+        "「無給職工作是修身養性的機會，更是公司對您能力的最高肯定！」🍀",
+        "「不要輕易下定論，看一個人的缺點時，不要忘記也多多看看他的優點。」🧭"
+    ];
+
+    let qaDatabase = [
+        { tag: "溝通隔閡", keywords: ["溝通", "隔閡", "內向", "不主動", "不發言"], title: "與內向或有年齡差的新人溝通產生隔閡時", solutions: ["先分享自己的資訊、經驗和生活趣事，在對方較有反應的話題多說一些，從中尋找共同點。"] },
+        { tag: "防衛心重", keywords: ["防衛心", "私人", "避重就輕", "界線"], title: "被輔導者性格較為內向防衛，談及關懷內容避重就輕時", solutions: ["涉及私人領域的話題時，使用『方不方便了解~』做開頭；尊重人際界線，不強迫分享。", "從日常聊天（如生活、嗜好、休閒）切入，或分享過往經驗或苦惱來幫助卸下防備。"] },
+        { tag: "態度被動", keywords: ["被動", "工作被動", "檢核", "進度", "安排"], title: "新人學習或工作效率表現較為被動時", solutions: ["安排每日工作給新人並每日檢核，待其完全上手後再由其自行編排進度。", "設定明確的「進度檢核點」或固定抽查時間（例如固定下午3點關心進度），不被動等待回報。"] },
+        { tag: "學習緩慢", keywords: ["慢", "學習慢", "忘記", "圖解", "Excel", "耐心"], title: "新人學習進度緩慢、教過的事情很快忘記時", solutions: ["透過 Excel 拆解計算式等圖解方式幫助理解邏輯，並要求新人留下練習紀錄、定期檢視與確認學習狀況。", "不要把新人當作一教就會，需要多點耐心多教幾次。"] },
+        { tag: "不循流程", keywords: ["流程", "不循流程", "標準", "己見", "堅持己見"], title: "新人堅持己見，不依循現有標準流程作業時", solutions: ["在可控範圍（如量少的案子）內讓新人嘗試自己的方法，並時時關心，最後反問成效讓其自己意識到問題。", "當新人出錯時不直接給答案，而是用「引導式提問」讓他自己思考解決方案。"] },
+        { tag: "業務協調", keywords: ["業務", "跨課別", "交流", "協調", "排程"], title: "新人遇到需跨課別交流、或與業務對應協調不熟練時", solutions: ["介紹課組內工作時把需要與別課交流的項目詳細說明，並在實做時親身教學一次。", "強化專業能力做基礎，當專業知識強化後即可快速判斷現場排程進度與業務急單策略。"] },
+        { tag: "抗拒加班", keywords: ["加班", "排班", "調班", "休假", "調派"], title: "新人抗拒或抱怨迫切性的人力調派與排班加班時", solutions: ["主動閒聊假日安排、排休狀況，盡量以協調的方式排班，讓對方感到被尊重，對加班/調班的抱怨會較少。"] },
+        { tag: "挫折低落", keywords: ["挫折", "失誤", "責備", "心情", "低落", "內耗"], title: "新人工作失誤、挫折感重，或被主管責備心情低落時", solutions: ["當他的傾聽者，分享一些自己過往相同的經驗，及一些消除內耗的方法。", "進行個案討論，協助解決其遇到的困難點。", "多給予讚美與真誠的回饋來建立自信，或建議從事健康活動來放鬆身心。"] },
+        { tag: "薪資偏低", keywords: ["薪資", "薪水", "偏低", "同學", "比較"], title: "新人分享薪資比較，覺得與在其它公司同學相比偏低時", solutions: ["以長久發展及自身經歷砥礪對方士氣。"] }
+    ];
+
+    let stories = [
+        { header: "【生產廠】天馬行空、愛抱怨的新人 (年資 1年8個月)", status: "該員對廠內各項作業與設備抱持著諸多天馬行空的想法。設備異常時總是怪罪設備老舊，抱怨公司為何不汰舊換新減少異常。", process: "空壓機室溫過高導致跳脫異常時，親力親為帶領該員進行改善實作，並於過程中分享經驗、授予相關注意事項。藉由施作過程，讓該員從初始半信半疑，轉由慢慢接受經驗傳承。", change: "遇到設備異常相關問題時，不再一味將問題歸咎於設備老舊，而是試想有無改善可行替代方案後，主動與輔導員討論協作。", reflection: "將口說化為行動，讓事實證明一切，遠比口說無憑來的深職人心。在歷任被輔導者洗禮下，歷練出看待事情要學著沉穩淡定，能留得住的才是最大的收穫。" },
+        { header: "【管理課】剛進職場適應不良的女性同仁 (年資 1年8個月)", status: "管理課長退休由事業部經經理暫代，實際輔導新人由我實施。首要重點是讓她對工作環境在最短時間適應，盡快消除陌生感。", process: "最常運用技巧是傾聽與同理心。因自身為男性主管，擔心她有些事不好意思開口，特別請課內資深的女性業助同仁從旁關心協助上班的日常需要。", change: "從開始上班前幾天不太敢跟同事溝通，到實習三個月後，能跟事業部內大部分同仁主動攀談。針對負責工作內容也能初步提出疑問跟見解。", reflection: "放慢自己腳步，聽比說更重要，先建立一個願意讓對方開口的空間，後續才有辦法雙向溝通。少一分主觀意識，多一分同理心，成效必定事半功倍。" },
+        { header: "【工程組】初次計算SS結構，鋼樓梯無從著手 (年資 2年)", status: "過去計算圖說多以SRC為主，第一次計算SS結構，該員在計算附屬構件中的鋼樓梯時無從著手，需要輔導員協助。", process: "運用同理心引案說出困難，與其約定指導時間。拆解計算做法圖解給他看，並在電腦上示範與找過去案例驗算。最後讓部屬自己操作，即時稱讚並給予完成其他計算的考驗與難度挑戰。", change: "遇到相同問題能快速有效率完成。除了學會工作技巧外，部屬變得更為勇於發問，對作業成效更有自信與成就感。", reflection: "多鼓勵、少批評；先傾聽、再說明的方式可以更加瞭解部屬的疑問與問題核心。教導是必須擬定計畫、有步驟的，才能讓學習在正向曲線上。" },
+        { header: "【加工廠】轉調新崗位感到排斥的新人 (年資 0年8個月)", status: "大學畢業剛踏入職場，對於環境陌生與同事交談溝通技巧為零。因工作需求從吊運板件崗位轉調至COIL吊運作業，新人產生排斥感。", process: "跟吳員聊大學生活、職場文化，多帶他與周遭同仁聊天敞開心胸。告知他是因為工作表現良好公司才做轉調，強調吊運COIL是本廠一切工作的源頭，以自身經驗教導觀念與方法。", change: "吳員不需要輔導員帶領也可以自然的與其他員工交談。轉調一段時間後，吳員已開始主動思考如何翻倉來提升工作效率，從中獲得成就感。", reflection: "學會放慢腳步，先求穩、再求快。每個人學習能力不同，要找到適合的方法。了解到進入陌生的職場有專職輔導員的重要與教學相長。" },
+        { header: "【現場組】擔心與資深同事相處、怕做錯的新人 (年資 1年)", status: "1. 新進公司與資深同事相處，會怕被不理會以及不指導。2. 工作上怕做錯導致排程延後。3. 從學生時期轉變職場，環境不同無法適應。", process: "先去了解學員在工作上碰到的問題，與資深同仁聊天了解狀況。與新進同仁以聊天不緊張的方式溝通並轉述現場狀況，讓新進同仁放心工作，用自身經驗告知大家個性都不錯。", change: "現場同仁會開始主動聊天和指導。新人對於工作更能放心去做，且遇到不懂的地方也會試著主動詢問。", reflection: "每個同仁都有新人階段，顧慮和擔憂一定會有，所以幫忙解決這些問題讓他在職場更放心，工作效率自然提高，並能降低離職率。" },
+        { header: "【加工技術組】配刀尺寸配置產生疑問的新人 (年資 1年8個月)", status: "學習S5002配刀，針對小尺寸（個位、小數點）如何配置方式產生疑問。", process: "利用專業知識教導及一對一指導，傾聽對方需求、分次教導工作技能。講解過程中，適時反問對方是否聽懂，並請對方解釋講解內容以增強自信心。", change: "從一開始不熟悉配刀小尺寸如何配置，經講解學習後，初步可以獨立配置尺寸（個位及小數點）作業。", reflection: "教導的方式很多，只有一套教導方式無法教導全部的人，應學習多層次的講解方式，針對每個被輔導同仁講解他們易懂的邏輯。" },
+        { header: "【生管/物流組】不願協助業務急單、排程不熟 (年資 2年)", status: "業務急需裝車出貨，新人因對生產訂單與製程排程不熟悉、車輛安排技巧不熟，且對話間透漏出不想協助業務急需出貨要求的抗拒感。", process: "利用工作空檔主動分享單位新人可能遇到的問題，引導說出心裡想法並簡述確認。實際帶領處理一次常見異常、告知主因與處理對策，之後交由其主導並在旁陪同提醒重點。", change: "專業知識強化後可快速判斷現場排程與急單對策，交談上相對有自信。經驗累積後溝通能力提升，業務也能理解可互相協助，解決問題意願大幅改善。", reflection: "先了解困難減少先入為主。溝通時轉換立場兼顧事情處理與心情。正面思考肯定別人。嘗試換個立場想一想問題是什麼，才能找出最適當處理方式。" },
+        { header: "【業務組】不擅長陌生拜訪與報價技巧的新人 (年資 1年)", status: "新進同仁不擅長進行陌生拜訪，且對於客戶報價技巧顯得不熟練。", process: "帶領新人進行陌生拜訪，請他從中觀察如何開場及引導話題至我方所需之要點，並觀察工廠內部狀況（包括人員、機檯、稼動率、鋼材等），使新人了解流程，引發其學習新奇感。", change: "新人從不知如何陌生拜訪，到對拜訪客戶感到樂趣，拓展客戶群效率彰顯，逐漸有新客戶成交，感到成就感進而對工作產生熱誠。", reflection: "現在的新人差異很大，必須更有耐心的教導。即便投入心力教導，結果也可能不如預期，需要調適自己心態，重新振作。" },
+        { header: "【業務組】對開發客戶與販售完全陌生的大新人 (年資 1個月)", status: "對於開發客戶完全陌生，不知道客戶名單，對公司販售項目與相關專業知識完全不懂。", process: "藉由實際參與拜訪，讓該員感受氛圍與技巧，並提供相關常用專業術語介紹。被輔導者起初排斥並害怕拜訪，由輔導員全程陪同輔助拜訪後增加其信心。", change: "從一開始的抗拒、排斥，到最後慢慢能嘗試，並用自己的方式試做，最終回來主動討論尋求精進，遇到事情也可以比較獨當一面先行處置。", reflection: "嘗試用比較淺顯易懂、外行的說法講內行的事情。理解新進人員並不是老手。先以標準指導方針提供基本能力後，再依據各人條件不同調整教育方式。" },
+        { header: "【倉儲/吊運組】有天車執照仍不敢獨立吊運 (年資 1年4個月)", status: "到職前無廠內天車吊具相關操作經驗、無金屬材質規範基礎。車輛駛入崗位時明顯緊張慌亂，核帳核物較慢導致司機不耐煩，令其更加害怕交流。", process: "於作業空檔分享主動觀察內容，運用提問邀請其說明困難並傾聽。討論後共同提出行動方案，將操作技能、注意事項依目標分次傳授，檢視成效並持續表達鼓勵與追蹤。", change: "材質知識與核對速度提升，吊具操作效率加強。能以貼切實務的吊運方式給予司機裝卸貨建議，交流方面明顯變得自信，對組織產生認同感。", reflection: "應該避免習慣性遵從自身「直覺」去決定立場和主導問題。在第一直覺時及時煞車，先阻止自己陷入特定立場，傾聽並融會貫通後共同找出合適方案。" },
+        { header: "【現場/技術組】剛出社會容易緊張忘東忘西的新人 (年資 1年)", status: "剛出社會容易緊張，一緊張容易忘東忘西發生錯誤，不擅長表達困難。抱怨在以前公司因緊張易被老鳥欺負、不教正確流程，導致求助無門。", process: "與新人建立溝通互動關係，從生活及興趣上了解使其侃侃而談。瞭解心情後，鼓勵他分享想法，建議多看作業步驟流程，並指派專責的師傅教導與互相討論對策。", change: "經由反覆練習改善緊張問題。從一開始不敢與同仁交談，到能在工作與會議中提出問題、討論方法，目前在工作上已經可以獨當一面並帶領新人成長。", reflection: "聽比說更困難，有良好的溝通互動關係才能進行後續對話。與每個人相處都得用同理心出發，並不可能一蹴可幾，必須慢慢了解需求並逐步調整到相同頻率。" }
+    ];
+    // END_DATA_SECTION
+
+    let currentActiveTag = '';
+    let isTagsExpanded = false;
+
+    // 前端功能一：渲染標籤與快搜 (支援摺疊機制)
+    function renderFrontendTags() {
+        const container = document.getElementById('tagContainer');
+        container.innerHTML = '';
+        
+        // 預設只顯示前 5 個標籤，展開則全秀
+        const tagsToRender = isTagsExpanded ? qaDatabase : qaDatabase.slice(0, 5);
+        
+        tagsToRender.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'tag';
+            if (item.tag === currentActiveTag) div.className = 'tag active';
+            div.innerText = '#' + item.tag;
+            div.onclick = function() { selectTag(item.tag, div); };
+            container.appendChild(div);
+        });
+
+        // 顯示全部 / 收起 按鈕
+        if (qaDatabase.length > 5) {
+            const toggleBtn = document.createElement('div');
+            toggleBtn.className = 'tag';
+            toggleBtn.style.backgroundColor = '#dbeafe';
+            toggleBtn.style.color = '#1e3a8a';
+            toggleBtn.style.fontWeight = '700';
+            toggleBtn.innerText = isTagsExpanded ? '收起標籤 ▴' : '顯示全部 ▾';
+            toggleBtn.onclick = function() {
+                isTagsExpanded = !isTagsExpanded;
+                renderFrontendTags();
+            };
+            container.appendChild(toggleBtn);
+        }
+    }
+
+    function searchKeyword() {
+        const input = document.getElementById('searchInput').value.trim().toLowerCase();
+        const resultBox = document.getElementById('searchResult');
+        if(!input) { resultBox.innerHTML = ''; return; }
+        
+        let html = '';
+        qaDatabase.forEach(item => {
+            const match = item.keywords.some(k => input.includes(k) || k.includes(input)) || item.tag.toLowerCase().includes(input);
+            if(match) {
+                html += `<div class="result-card-inner"><h3>💡 針對「${item.title}」：</h3><ul>` + item.solutions.map(s => `<li>${s}</li>`).join('') + '</ul></div>';
+            }
+        });
+        resultBox.innerHTML = html || '<div class="result-card-inner" style="border-left-color: #ef4444;">❌ 找不到完全相符的案例，您可以嘗試換個關鍵字搜尋，或參考下方幕後故事故事喔！</div>';
+    }
+
+    function selectTag(tag, el) {
+        currentActiveTag = tag;
+        document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('searchInput').value = tag;
+        searchKeyword();
+    }
+
+    // 前端功能二：打氣筒
+    function injectEnergy() {
+        const display = document.getElementById('quoteDisplay');
+        display.style.opacity = 0;
+        setTimeout(() => {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            display.innerText = quotes[randomIndex];
+            display.style.opacity = 1;
+        }, 200);
+    }
+
+    // 前端功能三：渲染幕後故事手風琴
+    function renderFrontendStories() {
+        const group = document.getElementById('accordionGroup');
+        group.innerHTML = '';
+        stories.forEach(item => {
+            const html = `
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">${item.header}</div>
+                    <div class="accordion-content">
+                        <div class="accordion-body">
+                            <div class="story-block"><span class="story-label label-status">💥 發生狀況</span><div>${item.status}</div></div>
+                            <div class="story-block"><span class="story-label label-process">🛠️ 輔導過程</span><div>${item.process}</div></div>
+                            <div class="story-block"><span class="story-label label-change">🌱 新人改變</span><div>${item.change}</div></div>
+                            <div class="story-block"><span class="story-label label-reflection">🕯️ 前輩反思</span><div>${item.reflection}</div></div>
+                        </div>
+                    </div>
+                </div>`;
+            group.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function toggleAccordion(header) {
+        const item = header.parentElement;
+        const content = header.nextElementSibling;
+        const isOpen = item.classList.contains('active');
+        document.querySelectorAll('.accordion-item').forEach(i => { i.classList.remove('active'); i.querySelector('.accordion-content').style.maxHeight = null; });
+        if (!isOpen) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; }
+    }
+
+    // 初始化網頁載入
+    window.onload = function() { renderFrontendTags(); renderFrontendStories(); };
+
+    // ────────────────────────────────────────────────────────
+    // ⚙️ 視覺化表單後台管理系統
+    // ────────────────────────────────────────────────────────
+    function openAdmin() {
+        const password = prompt("🔒 請輸入春源人資專屬管理密碼：");
+        if(password === adminPassword) {
+            document.getElementById('adminSection').style.display = 'block';
+            renderAdminPanel();
+            window.scrollTo(0, document.body.scrollHeight);
+        } else if(password !== null) { alert("❌ 密碼錯誤！"); }
+    }
+
+    function renderAdminPanel() {
+        document.getElementById('adminPasswordInput').value = adminPassword;
+        document.getElementById('adminQuotesText').value = quotes.join('\n');
+        
+        // 渲染錦囊妙計表單區
+        const qaContainer = document.getElementById('adminQaContainer');
+        qaContainer.innerHTML = '';
+        qaDatabase.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'admin-item-box';
+            div.innerHTML = `
+                <button type="button" class="btn-delete" onclick="deleteQaItem(${idx})">❌ 刪除分類</button>
+                <span style="font-weight:bold; color:#d97706; font-size:12px;">分類 #${idx+1}</span>
+                <label class="admin-label">快速搜尋標籤 (不要打#)：</label><input type="text" class="admin-input qa-tag" value="${item.tag}">
+                <label class="admin-label">對應問題完整標題：</label><input type="text" class="admin-input qa-title" value="${item.title}">
+                <label class="admin-label">觸發關鍵字 (多個請以逗號隔開)：</label><input type="text" class="admin-input qa-keywords" value="${item.keywords.join(',')}">
+                <label class="admin-label">前輩對策解法 (每行一條對策)：</label><textarea class="admin-textarea-sm qa-solutions">${item.solutions.join('\n')}</textarea>
+            `;
+            qaContainer.appendChild(div);
+        });
+
+        // 渲染幕後故事表單區
+        const storyContainer = document.getElementById('adminStoryContainer');
+        storyContainer.innerHTML = '';
+        stories.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'admin-item-box';
+            div.innerHTML = `
+                <button type="button" class="btn-delete" onclick="deleteStoryItem(${idx})">❌ 刪除個案</button>
+                <span style="font-weight:bold; color:#1e3a8a; font-size:12px;">個案故事 #${idx+1}</span>
+                <label class="admin-label">個案列表名稱/子標題：</label><input type="text" class="admin-input s-header" value="${item.header}">
+                <label class="admin-label">💥 發生狀況：</label><textarea class="admin-textarea-sm s-status">${item.status}</textarea>
+                <label class="admin-label">🛠️ 輔導過程：</label><textarea class="admin-textarea-sm s-process">${item.process}</textarea>
+                <label class="admin-label">🌱 新人改變：</label><textarea class="admin-textarea-sm s-change">${item.change}</textarea>
+                <label class="admin-label">🕯️ 前輩反思：</label><textarea class="admin-textarea-sm s-reflection">${item.reflection}</textarea>
+            `;
+            storyContainer.appendChild(div);
+        });
+    }
+
+    function addBlankQa() { qaDatabase.push({ tag: "新標籤", keywords: ["新關鍵字"], title: "請在這裡輸入完整狀況描述", solutions: ["請填入第一條解法對策"] }); renderAdminPanel(); }
+    function deleteQaItem(idx) { qaDatabase.splice(idx, 1); renderAdminPanel(); }
+    function addBlankStory() { stories.push({ header: "新個案標題", status: "描述發生的狀況...", process: "描述輔導過程...", change: "描述新人的改變...", reflection: "填寫輔導員的自我成長與反思..." }); renderAdminPanel(); }
+    function deleteStoryItem(idx) { stories.splice(idx, 1); renderAdminPanel(); }
+
+    // 蒐集數據並重新包裝導出新網頁
+    function collectDataAndExport() {
+        try {
+            const newPassword = document.getElementById('adminPasswordInput').value.trim() || "1200";
+            const rawQuotes = document.getElementById('adminQuotesText').value.trim().split('\n').filter(q => q);
+            
+            const newQaDatabase = [];
+            document.querySelectorAll('#adminQaContainer .admin-item-box').forEach(box => {
+                const tag = box.querySelector('.qa-tag').value.trim();
+                const title = box.querySelector('.qa-title').value.trim();
+                const keywords = box.querySelector('.qa-keywords').value.split(',').map(k => k.trim()).filter(k => k);
+                const solutions = box.querySelector('.qa-solutions').value.trim().split('\n').filter(s => s);
+                if(tag) newQaDatabase.push({ tag, keywords, title, solutions });
+            });
+
+            const newStories = [];
+            document.querySelectorAll('#adminStoryContainer .admin-item-box').forEach(box => {
+                const header = box.querySelector('.s-header').value.trim();
+                const status = box.querySelector('.s-status').value.trim();
+                const process = box.querySelector('.s-process').value.trim();
+                const change = box.querySelector('.s-change').value.trim();
+                const reflection = box.querySelector('.s-reflection').value.trim();
+                if(header) newStories.push({ header, status, process, change, reflection });
+            });
+
+            let currentHTML = document.documentElement.outerHTML;
+            const newDataSection = `// START_DATA_SECTION\n    let adminPassword = ${JSON.stringify(newPassword)};\n\n    let quotes = ${JSON.stringify(rawQuotes, null, 4)};\n\n    let qaDatabase = ${JSON.stringify(newQaDatabase, null, 4)};\n\n    let stories = ${JSON.stringify(newStories, null, 4)};\n    // END_DATA_SECTION`;
+            const regex = /\/\/ START_DATA_SECTION[\s\S]*?\/\/ END_DATA_SECTION/;
+            let newHTML = "<!DOCTYPE html>\n<html lang=\"zh-TW\">\n" + currentHTML.replace(regex, newDataSection) + "\n</html>";
+            
+            const blob = new Blob([newHTML], { type: "text/html;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "春源鋼鐵_輔導員急救包_修訂版.html";
+            link.click();
+            alert("🎉 修改成功！全新網頁檔案已自動下載，未來請直接使用這個新檔案。");
+        } catch (e) { alert("❌ 導出錯誤，請檢查輸入內容是否完整：" + e.message); }
+    }
+</script>
+
+</body>
+</html>
